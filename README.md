@@ -4,8 +4,8 @@ Exporting SVGs from Illustrator is a slow, laborious process&mdash;this script f
 
 * [Installation](#installation)
 * [Running the Script](#running-the-script)
-  * [Document Setup](#document-setup)
-  * [Details](#details)
+* [Document Setup](#document-setup)
+
 
 <a name="installation"></a>
 ## Installation
@@ -18,13 +18,13 @@ Mac OS: `/Applications/Adobe lllustrator CC 2014/Presets/[language]/Scripts/`
 Note: Make sure to restart Illustrator if you installed the script while the Application is running.
 
 <a name="running-the-script"></a>
-### Running the Script
+## Running the Script
 
 Once the script is installed, you'll be able to run it by going to `File > Scripts > SVG Exporter`. As mentioned, you don't need to install the script. If you want to run it as a one-off, select `File > Scripts > Other Script...` and select the `SVG Exporter.jsx` file in the file chooser.
 
 Once you run the script, you'll be prompted to select a location to save the SVG files. After a location is set, you're done&mdash;the script does the rest.
 
 <a name="document-setup"></a>
-### Document Setup
+## Document Setup
 
 The script doesn't force any setup or organization on you. You can export layers, groups, compound paths or individual paths. Just name the path/layer/group/compound path what you want the file name to be (e.g., my-cool-vector-drawing.svg) and the script will prep it for export. You can export nested layers (example: export indiviual assets as well all assets in a parent layer). If you previously named an element for export but now don't want to export for some reason, simply lock the element.
