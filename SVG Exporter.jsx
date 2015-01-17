@@ -88,6 +88,8 @@ function exportLayer(layer) {
       endX,
       endY,
       name,
+      prettyName,
+      itemName,
       layerItems;
 
   layerItems = [];
@@ -102,6 +104,7 @@ function exportLayer(layer) {
   }
 
   name = layer.name;
+  prettyName = name.slice(0, -4).replace(/[^\w\s]|_/g, " ").replace(/\s+/g, "-").toLowerCase();
 
   for ( i = 0, len = layerItems.length; i < len; i++ ) {
     app.activeDocument = sourceDoc;
@@ -114,7 +117,17 @@ function exportLayer(layer) {
   for ( i = 0, len = exportDoc.pageItems.length; i < len; i++) {
 
     item = exportDoc.pageItems[i];
+    item.hidden = false;
 
+    if(item.name) {
+      itemName = item.name;
+      if(itemName.split('.').pop() === 'svg') {
+        itemName = itemName.slice(0, -4);
+      }
+      itemName = itemName.replace(/[^\w\s]|_/g, " ").replace(/\s+/g, "-").toLowerCase()
+
+      item.name = prettyName + '-' + itemName;
+    }
     /*
      * We want the smallest startX, startY for obvious reasons.
      * We also want the smallest endX and endY because Illustrator
@@ -128,23 +141,27 @@ function exportLayer(layer) {
     endY = ( !endY || endY > item.visibleBounds[3] ) ? item.visibleBounds[3] : endY;
   }
 
+  exportDoc.layers[0].name = name.slice(0, -4);
   exportSVG( exportDoc, name, [startX, startY, endX, endY], svgOptions );
 }
 
 function exportItem(item) {
 
-  var name;
+  var name,
+      newItem;
 
   name = item.name;
-  item.duplicate( exportDoc, ElementPlacement.PLACEATEND );
-
+  newItem = item.duplicate( exportDoc, ElementPlacement.PLACEATEND );
+  newItem.hidden = false;
+  newItem.name = item.name.slice(0, -4);
   app.activeDocument = exportDoc;
 
+  exportDoc.layers[0].name = ' ';
   exportSVG( exportDoc, name, item.visibleBounds, svgOptions );
 }
 
 function exportSVG(doc, name, bounds, exportOptions) {
-  doc.layers[0].name = name.slice(0, -4);
+
   doc.artboards[0].artboardRect = bounds;
 
   var file = new File( exportFolder.fsName + '/' + name );
