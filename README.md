@@ -19,4 +19,8 @@ Once you run the script, you'll be prompted to select a location to save the SVG
 
 ## Document Setup
 
-The script doesn't force any setup or organization on you. You can export layers, groups, compound paths or individual paths. Just name the path/layer/group/compound path what you want the file name to be (e.g., my-cool-vector-drawing.svg) and the script will prep it for export. You can export nested layers (example: export indiviual assets as well all assets in a parent layer). If you previously named an element for export but now don't want to export for some reason, simply lock the element.
+The script doesn't force any setup or organization on you. You can export layers, groups, compound paths or individual paths. Just name the path/layer/group/compound path what you want the file name to be (e.g., my-cool-vector-drawing.svg) and the script will prep it for export. You can export nested layers (example: export indiviual assets as well all assets in a parent layer). 
+
+If you want to individually name each element in your SVG for CSS styling (ala [Iconic](http://useiconic.com)), just name each path within a layer or group you wish to have exported. The script will santize the name so that it will be converted to a pretty ID by Illustrator's SVG export engine. _**Hint:** We've also made a slick [Grunt tool](https://github.com/iconic/grunt-svg-toolkit) which (among other things) will convert the IDs from the Illustrator-exported SVG to classes._
+
+If you previously named an element for export but now don't want to export for some reason, simply lock it to keep it from being exported.
