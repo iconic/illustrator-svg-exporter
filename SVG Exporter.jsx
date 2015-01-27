@@ -34,7 +34,6 @@ var exportFolder,
 try {
   if ( app.documents.length > 0 ) {
     svgOptions = new ExportOptionsSVG();
-    svgOptions.artBoardClipping = true;
     svgOptions.embedRasterImages = false;
     svgOptions.cssProperties = SVGCSSPropertyLocation.PRESENTATIONATTRIBUTES;
     svgOptions.fontSubsetting = SVGFontSubsetting.None;
@@ -60,24 +59,81 @@ catch(e) {
 
 function main() {
   var item;
-
+  app.activeDocument = sourceDoc;
   itemsToExport = getNamedItems(sourceDoc);
 
   for ( var i = 0, len = itemsToExport.length; i < len; i++ ) {
 
+
     item = itemsToExport[i];
 
-    if ( item.typename === 'Layer' ) {
+    if ( item.typename === 'Artboard' ) {
+      exportArtboard(item);
+    } else if ( item.typename === 'Layer' ) {
       exportLayer(item);
     } else {
       exportItem(item);
     }
 
     // Empty export document
-    while ( exportDoc.layers[0].pageItems.length ) {
-      exportDoc.layers[0].pageItems[0].remove();
+    exportDoc.pageItems.removeAll();
+  }
+
+}
+
+function exportArtboard(artboard) {
+
+  var item,
+      name,
+      prettyName,
+      doc,
+      rect,
+      bbox;
+
+  app.activeDocument = sourceDoc;
+  rect = artboard.artboardRect;
+
+  bbox = sourceDoc.pathItems.rectangle(rect[1], rect[0], rect[2]-rect[0], rect[1]-rect[3]);
+  bbox.stroked = false;
+  bbox.name = '__ILSVGEX__BOUNDING_BOX';
+
+  name = artboard.name;
+  prettyName = name.slice(0, -4).replace(/[^\w\s]|_/g, " ").replace(/\s+/g, "-").toLowerCase();
+
+  app.activeDocument = exportDoc;
+
+  for ( var i = 0, len = sourceDoc.pageItems.length; i < len; i++ ) {
+    item = sourceDoc.pageItems[i];
+
+    if( hitTest(item, bbox) && !item.locked && !anyParentLocked(item)  ) {
+
+      item.duplicate( exportDoc, ElementPlacement.PLACEATEND );
     }
   }
+
+  app.activeDocument = exportDoc;
+  exportDoc.pageItems.getByName('__ILSVGEX__BOUNDING_BOX').remove();
+
+  // Check if artboard is blank
+  if(!exportDoc.pageItems.length) {
+    return;
+  }
+
+  for ( i = 0, len = exportDoc.pageItems.length; i < len; i++) {
+    item = exportDoc.pageItems[i];
+
+    /*
+     * For the moment, all pageItems are made visible and exported
+     * unless they are locked. This may not make sense, but it'll
+     * work for now.
+     */
+    item.hidden = false;
+  }
+
+  exportDoc.layers[0].name = prettyName;
+  exportSVG( exportDoc, name, bbox.visibleBounds, svgOptions );
+
+  sourceDoc.pageItems.getByName('__ILSVGEX__BOUNDING_BOX').remove();
 }
 
 function exportLayer(layer) {
@@ -117,6 +173,12 @@ function exportLayer(layer) {
   for ( i = 0, len = exportDoc.pageItems.length; i < len; i++) {
 
     item = exportDoc.pageItems[i];
+
+    /*
+     * For the moment, all pageItems are made visible and exported
+     * unless they are locked. This may not make sense, but it'll
+     * work for now.
+     */
     item.hidden = false;
 
     if(item.name) {
@@ -171,15 +233,17 @@ function exportSVG(doc, name, bounds, exportOptions) {
 function getNamedItems(doc) {
   var item,
       items,
-      doclayers;
+      doclayers,
+      artboards;
 
   items = [];
 
-  // Check all pageItems for name match
-  for ( var i = 0, len = doc.pageItems.length; i < len; i++ ) {
-    item =  doc.pageItems[i];
+  // Check all artboards for name match
+  artboards = [];
 
-    if ( item.name.split('.').pop() === 'svg' && !item.locked && !anyParentLocked(item) ) {
+  for ( var i = 0, len = doc.artboards.length; i < len; i++ ) {
+    item = doc.artboards[i];
+    if ( item.name.split('.').pop() === 'svg' ) {
       items.push(item);
     }
   }
@@ -190,6 +254,15 @@ function getNamedItems(doc) {
 
   for ( i = 0, len = doclayers.length; i < len; i++ ) {
     item = doclayers[i];
+
+    if ( item.name.split('.').pop() === 'svg' && !item.locked && !anyParentLocked(item) ) {
+      items.push(item);
+    }
+  }
+
+  // Check all pageItems for name match
+  for ( i = 0, len = doc.pageItems.length; i < len; i++ ) {
+    item =  doc.pageItems[i];
 
     if ( item.name.split('.').pop() === 'svg' && !item.locked && !anyParentLocked(item) ) {
       items.push(item);
@@ -242,5 +315,41 @@ function anyParentLocked(item) {
     item = item.parent;
   }
 
+  return false;
+}
+
+
+/* Code derived from John Wundes ( john@wundes.com ) www.wundes.com
+ * Copyright (c) 2005 wundes.com
+ * All rights reserved.
+ *
+ * This code is derived from software contributed to or originating on wundes.com
+ */
+
+function hitTest(a,b){
+  if(!hitTestX(a,b)){
+    return false;
+  }
+  if(!hitTestY(a,b)){
+    return false;
+  }
+  return true;
+}
+
+function hitTestX(a,b){
+  var p1 = a.visibleBounds[0];
+  var p2 = b.visibleBounds[0];
+  if( (p2<=p1 && p1<=p2+b.width) || (p1<=p2 && p2<=p1+a.width) ) {
+     return true;
+  }
+  return false;
+}
+
+function hitTestY(a,b){
+  var p3 = a.visibleBounds[1];
+  var p4 = b.visibleBounds[1];
+  if( (p3>=p4 && p4>=(p3-a.height)) || (p4>=p3 && p3>=(p4-b.height)) ) {
+    return true;
+  }
   return false;
 }
