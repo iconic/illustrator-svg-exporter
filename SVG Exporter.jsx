@@ -106,7 +106,6 @@ function exportArtboard(artboard) {
     item = sourceDoc.pageItems[i];
 
     if( hitTest(item, bbox) && !item.locked && !anyParentLocked(item)  ) {
-
       item.duplicate( exportDoc, ElementPlacement.PLACEATEND );
     }
   }
@@ -114,8 +113,9 @@ function exportArtboard(artboard) {
   app.activeDocument = exportDoc;
   exportDoc.pageItems.getByName('__ILSVGEX__BOUNDING_BOX').remove();
 
-  // Check if artboard is blank
+  // Check if artboard is blank, clean up and exit
   if(!exportDoc.pageItems.length) {
+    sourceDoc.pageItems.getByName('__ILSVGEX__BOUNDING_BOX').remove();
     return;
   }
 
