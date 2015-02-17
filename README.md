@@ -1,6 +1,6 @@
 # Illustrator SVG Exporter
 
-Exporting SVGs from Illustrator is a slow, laborious process&mdash;this script fixes that. The script doesn't waste your time with GUI or settings you'll never use. You just run the script, select a location to export and you have your SVGs. We love the concept behind [Generator](http://blogs.adobe.com/photoshopdotcom/2013/09/introducing-adobe-generator-for-photoshop-cc.html) and this script takes a strong cue from it. The script exports any layer, group or path named with the `.svg` extension.
+Exporting SVGs from Illustrator is a slow, laborious process&mdash;this script fixes that. The script doesn't waste your time with GUI or settings you'll never use. You just run the script, select a location to export and you have your SVGs. We love the concept behind [Generator](http://blogs.adobe.com/photoshopdotcom/2013/09/introducing-adobe-generator-for-photoshop-cc.html) and this script takes a strong cue from it. The script exports any layer, group or path named with the `.svg` extension. We use this script to export all our icons for [Open Iconic](https://github.com/iconic/open-iconic)
 
 ## Installation
 
@@ -19,7 +19,9 @@ Once you run the script, you'll be prompted to select a location to save the SVG
 
 ## Document Setup
 
-The script doesn't force any setup or organization on you. You can export layers, groups, compound paths or individual paths. Just name the path/layer/group/compound path what you want the file name to be (e.g., my-cool-vector-drawing.svg) and the script will prep it for export. You can export nested layers (example: export indiviual assets as well all assets in a parent layer). 
+The script doesn't force any setup or organization on you. You can export layers, groups, compound paths or individual paths. Just name the path/layer/group/compound path what you want the file name to be (e.g., my-cool-vector-drawing.svg) and the script will prep it for export. You can export nested layers (example: export indiviual assets as well all assets in a parent layer). The exported SVGs will be cropped to the bounding box of the path/group/layer.
+
+You can name artboards with a `.svg` extension to export SVGs to specific dimensions other than the paths' bounding box. All paths within the artboard will be exported, so make sure to clean up any unwanted paths before export.
 
 If you want to individually name each element in your SVG for CSS styling (ala [Iconic](http://useiconic.com)), just name each path within a layer or group you wish to have exported. The script will santize the name so that it will be converted to a pretty ID by Illustrator's SVG export engine. _**Hint:** We've also made a slick [Grunt tool](https://github.com/iconic/grunt-svg-toolkit) which (among other things) will convert the IDs from the Illustrator-exported SVG to classes._
 
