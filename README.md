@@ -1,6 +1,6 @@
 # Illustrator SVG Exporter
 
-Exporting SVGs from Illustrator is a slow, laborious process&mdash;this script fixes that. The script doesn't waste your time with GUI or settings you'll never use. You just run the script, select a location to export and you have your SVGs. We love the concept behind [Generator](http://blogs.adobe.com/photoshopdotcom/2013/09/introducing-adobe-generator-for-photoshop-cc.html) and this script takes a strong cue from it. The script exports any layer, group or path named with the `.svg` extension. We use this script to export all our icons for [Open Iconic](https://github.com/iconic/open-iconic)
+Exporting SVGs from Illustrator is a slow, laborious process&mdash;this script fixes that. The script doesn't waste your time with GUI or settings you'll never use. You just run the script, select a location to export and you have your SVGs. We love the concept behind [Generator](http://blogs.adobe.com/photoshopdotcom/2013/09/introducing-adobe-generator-for-photoshop-cc.html) and this script takes a strong cue from it. The script exports any layer, group or path named with the `.svg` extension. We use this script to export all our icons for [Open Iconic](https://github.com/iconic/open-iconic).
 
 ## Installation
 
