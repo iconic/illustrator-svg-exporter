@@ -85,7 +85,7 @@ function exportArtboard(artboard) {
 
   var item,
       name,
-      prettyName,
+      //prettyName,
       doc,
       rect,
       bbox;
@@ -98,7 +98,7 @@ function exportArtboard(artboard) {
   bbox.name = '__ILSVGEX__BOUNDING_BOX';
 
   name = artboard.name;
-  prettyName = name.slice(0, -4).replace(/[^\w\s]|_/g, " ").replace(/\s+/g, "-").toLowerCase();
+  //prettyName = name.slice(0, -4).replace(/[^\w\s]|_/g, " ").replace(/\s+/g, "-").toLowerCase();
 
   app.activeDocument = exportDoc;
 
@@ -130,7 +130,7 @@ function exportArtboard(artboard) {
     item.hidden = false;
   }
 
-  exportDoc.layers[0].name = prettyName;
+  exportDoc.layers[0].name = name;//prettyName;
   exportSVG( exportDoc, name, bbox.visibleBounds, svgOptions );
 
   sourceDoc.pageItems.getByName('__ILSVGEX__BOUNDING_BOX').remove();
@@ -144,7 +144,7 @@ function exportLayer(layer) {
       endX,
       endY,
       name,
-      prettyName,
+      //prettyName,
       itemName,
       layerItems;
 
@@ -160,7 +160,7 @@ function exportLayer(layer) {
   }
 
   name = layer.name;
-  prettyName = name.slice(0, -4).replace(/[^\w\s]|_/g, " ").replace(/\s+/g, "-").toLowerCase();
+  //prettyName = name.slice(0, -4).replace(/[^\w\s]|_/g, " ").replace(/\s+/g, "-").toLowerCase();
 
   for ( i = 0, len = layerItems.length; i < len; i++ ) {
     app.activeDocument = sourceDoc;
@@ -186,9 +186,9 @@ function exportLayer(layer) {
       if(itemName.split('.').pop() === 'svg') {
         itemName = itemName.slice(0, -4);
       }
-      itemName = itemName.replace(/[^\w\s]|_/g, " ").replace(/\s+/g, "-").toLowerCase()
+      //itemName = itemName.replace(/[^\w\s]|_/g, " ").replace(/\s+/g, "-").toLowerCase()
 
-      item.name = prettyName + '-' + itemName;
+      item.name = itemName//prettyName + '-' + itemName;
     }
     /*
      * We want the smallest startX, startY for obvious reasons.
@@ -228,6 +228,8 @@ function exportSVG(doc, name, bounds, exportOptions) {
 
   var file = new File( exportFolder.fsName + '/' + name );
   doc.exportFile( file, ExportType.SVG, exportOptions );
+
+  modSVG(file)
 }
 
 function getNamedItems(doc) {
@@ -352,4 +354,22 @@ function hitTestY(a,b){
     return true;
   }
   return false;
+}
+
+function modSVG(file)
+{
+   var css = "css/style.css";
+
+   file.open('e');
+
+   xml = file.read()
+   .replace(/^<\?xml.*\?>/,'<?xml-stylesheet type="text/css" href="'+css+'"?>')
+
+   .replace(/^<g[^\n]+\.svg">(.*)<.g>/g,"$1")
+
+   .replace(/(g|path) id=['\"](?!_x23_)/g,'$1 class="')
+
+   .replace(/_(x2.|[0-9])_/g,'');
+
+   file.close(); file.open('w'); file.write(xml); file.close()
 }
