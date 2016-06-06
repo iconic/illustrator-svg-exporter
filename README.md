@@ -6,8 +6,8 @@ Exporting SVGs from Illustrator is a slow, laborious process&mdash;this script f
 
 You don't _have_ to install the script to use it (more on that later), but installing the script is by far the best way to use it. All you need to do is drop the `SVG Exporter.jsx` file in one of the following directories:
 
-* Windows: `C:\Program Files\Adobe\Adobe lllustratorCC2014\Presets\[language]\Scripts\`
-* Mac OS: `/Applications/Adobe lllustrator CC 2014/Presets/[language]/Scripts/`
+* Windows: `C:\Program Files\Adobe\Adobe Illustrator CC 2015\Presets\[language]\Scripts\`
+* Mac OS: `/Applications/Adobe Illustrator CC 2015/Presets/[language]/Scripts/`
 
 Note: Make sure to restart Illustrator if you installed the script while the Application is running.
 
